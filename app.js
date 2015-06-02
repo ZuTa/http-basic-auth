@@ -11,9 +11,21 @@ var basic = auth.basic({
 );
 
 var app = express();
+
 app.set('port', (process.env.PORT || 5000));
 app.get('/', function(req, res) {
-  res.end("Welcome to private area - " + req.user + "!");
+  var options = {
+    root: __dirname + '/public/',
+  };
+  res.sendFile('100.tsv', options, function (err) {
+    if (err) {
+      console.log(err);
+      res.status(err.status).end();
+    }
+    else {
+      console.log('Sent: 100.tsv');
+    }
+  });
 });
 
 http.createServer(basic, app).listen(app.get('port'), function() {
