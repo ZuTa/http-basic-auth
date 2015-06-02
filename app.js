@@ -3,27 +3,32 @@ var express = require('express');
 var http = require('http');
 
 var basic = auth.basic({
-  realm: "Simon Area."
+  realm: "This is Products Area."
   },
-  function (username, password, callback) { // Custom authentication method.
-    callback(username === "ZuTa" && password === "Power");
+  function (username, password, callback) {
+    callback(username === "user" && password === "password");
   }
 );
 
 var app = express();
 
 app.set('port', (process.env.PORT || 5000));
-app.get('/', function(req, res) {
+app.get('/feed/:name', function(req, res) {
   var options = {
     root: __dirname + '/public/',
+    headers: {
+      'x-timestamp': Date.now(),
+      'x-sent': true
+    }
   };
-  res.sendFile('100.tsv', options, function (err) {
+  var fileName = req.params.name;
+  res.sendFile(fileName, options, function (err) {
     if (err) {
       console.log(err);
       res.status(err.status).end();
     }
     else {
-      console.log('Sent: 100.tsv');
+      console.log('Sent: ', fileName);
     }
   });
 });
